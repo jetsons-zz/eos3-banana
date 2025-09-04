@@ -1,0 +1,195 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    margin: 0;
+    padding: 8px;
+    line-height: 1.4;
+    font-size: 14px;
+  }
+
+  a {
+    color: #0000cc;
+    text-decoration: underline;
+  }
+
+  a:visited {
+    color: #0000cc;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    margin: 8px 0 4px 0;
+    color: #000000;
+  }
+
+  h1 { font-size: 18px; }
+  h2 { font-size: 16px; }
+  h3 { font-size: 14px; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  th, td {
+    border: 1px solid #000000;
+    padding: 4px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+
+  ul, ol {
+    margin: 4px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin: 2px 0;
+  }
+
+  pre, code {
+    font-family: monospace;
+    font-size: 12px;
+    background-color: #f8f8f8;
+  }
+
+  pre {
+    padding: 8px;
+    border: 1px solid #cccccc;
+    margin: 8px 0;
+    overflow-x: auto;
+  }
+
+  input, textarea, select, button {
+    font-family: sans-serif;
+    font-size: 12px;
+    border: 1px solid #000000;
+    padding: 2px 4px;
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  button {
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+
+  button:hover {
+    background-color: #f0f0f0;
+  }
+
+  input[type="file"] {
+    margin: 4px 0;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+}
+
+@layer components {
+  .kernel-header {
+    border-bottom: 1px solid #000000;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+
+  .kernel-section {
+    margin-bottom: 16px;
+    border-bottom: 1px solid #cccccc;
+    padding-bottom: 8px;
+  }
+
+  .kernel-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+  }
+
+  .kernel-table th,
+  .kernel-table td {
+    border: 1px solid #000000;
+    padding: 4px 6px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .kernel-table th {
+    background-color: #e0e0e0;
+    font-weight: bold;
+  }
+
+  .kernel-form {
+    margin: 8px 0;
+    padding: 8px;
+    border: 1px solid #cccccc;
+    background-color: #f8f8f8;
+  }
+
+  .kernel-form-row {
+    margin: 4px 0;
+  }
+
+  .kernel-form-label {
+    display: inline-block;
+    width: 120px;
+    font-weight: bold;
+  }
+
+  .kernel-list {
+    margin: 8px 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kernel-list-item {
+    padding: 2px 0;
+    border-bottom: 1px solid #eeeeee;
+    font-family: monospace;
+    font-size: 12px;
+  }
+
+  .kernel-status {
+    font-family: monospace;
+    font-size: 11px;
+    color: #666666;
+    margin: 4px 0;
+  }
+
+  .kernel-code {
+    font-family: monospace;
+    font-size: 11px;
+    background-color: #f8f8f8;
+    padding: 1px 3px;
+  }
+
+  .loading {
+    font-family: monospace;
+    font-size: 12px;
+    color: #666666;
+  }
+
+  .error {
+    color: #cc0000;
+    font-weight: bold;
+    font-size: 12px;
+    margin: 4px 0;
+  }
+}
