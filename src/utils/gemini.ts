@@ -35,8 +35,10 @@ class GeminiService {
       throw new Error('Gemini service not configured');
     }
 
-    try {
-      console.log('Starting image generation...');
+    // Add retry mechanism for mobile networks
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        console.log(`Starting image generation... (attempt ${attempt}/3)`);
       
       // Use Gemini 2.5 Flash Image Preview model for image generation
       const model = this.genAI.getGenerativeModel({ 
@@ -105,14 +107,33 @@ class GeminiService {
         
         // Create enhanced placeholder with actual response
         return this.generateEnhancedPlaceholder(text, inputFile);
-      } catch (textError) {
-        console.error('Error getting text response:', textError);
-        return this.generateEnhancedPlaceholder('API response processing failed', inputFile);
+        } catch (textError) {
+          console.error('Error getting text response:', textError);
+          return this.generateEnhancedPlaceholder('API response processing failed', inputFile);
+        }
+        
+      } catch (error) {
+        console.error(`Gemini API error (attempt ${attempt}/3):`, error);
+        
+        // If this is the last attempt, don't throw error - use fallback
+        if (attempt === 3) {
+          console.error('All API attempts failed, using fallback image');
+          const errorMessage = error instanceof Error ? error.message : '未知错误';
+          
+          if (errorMessage.includes('Load failed') || errorMessage.includes('fetch')) {
+            // Network error - return a network-specific placeholder
+            return this.generateNetworkErrorPlaceholder(inputFile);
+          }
+          
+          // Other API errors - return generic placeholder
+          return this.generateEnhancedPlaceholder('API调用失败，显示演示模式', inputFile);
+        }
+        
+        // Wait before retry (exponential backoff)
+        const waitTime = attempt * 1500; // Longer wait for mobile networks
+        console.log(`Retrying in ${waitTime}ms...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
       }
-      
-    } catch (error) {
-      console.error('Gemini API error:', error);
-      throw new Error(`生成失败: ${error instanceof Error ? error.message : '未知错误'}`);
     }
   }
 
@@ -222,6 +243,74 @@ class GeminiService {
           </text>
           <text x="400" y="360" text-anchor="middle" font-family="monospace" font-size="14" fill="#999">
             Canvas fallback mode active
+          </text>
+        </svg>
+      `);
+    }
+  }
+
+  private generateNetworkErrorPlaceholder(inputFile?: File): string {
+    // Create a network error specific placeholder
+    const canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 600;
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx) {
+      return 'data:image/svg+xml;base64,' + btoa(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+          <rect width="800" height="600" fill="#ffe6e6"/>
+          <text x="400" y="280" text-anchor="middle" font-family="monospace" font-size="20" fill="#cc0000">
+            ⚠️ 网络连接失败
+          </text>
+          <text x="400" y="320" text-anchor="middle" font-family="monospace" font-size="16" fill="#666">
+            请检查网络连接后重试
+          </text>
+        </svg>
+      `);
+    }
+    
+    try {
+      // Background - light red for error
+      ctx.fillStyle = '#ffe6e6';
+      ctx.fillRect(0, 0, 800, 600);
+      
+      // Error icon area
+      ctx.fillStyle = '#ffcccc';
+      ctx.fillRect(50, 100, 700, 400);
+      
+      // Title
+      ctx.fillStyle = '#cc0000';
+      ctx.font = 'bold 32px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('⚠️ 网络连接失败', 400, 200);
+      
+      // Message
+      ctx.fillStyle = '#666666';
+      ctx.font = '18px sans-serif';
+      ctx.fillText('无法连接到 Gemini 2.5 Flash Image Preview API', 400, 250);
+      ctx.fillText('请检查网络连接状态后重试', 400, 280);
+      
+      // Suggestions
+      ctx.font = '14px sans-serif';
+      ctx.fillStyle = '#999999';
+      ctx.fillText('建议：', 400, 330);
+      ctx.fillText('• 检查WiFi或移动数据连接', 400, 355);
+      ctx.fillText('• 尝试刷新页面重试', 400, 375);
+      ctx.fillText('• 稍后再次尝试', 400, 395);
+      
+      // Footer
+      ctx.fillStyle = '#cc6666';
+      ctx.font = '12px monospace';
+      ctx.fillText('Nano-Banana Figure Generator - Network Error Mode', 400, 550);
+      
+      return canvas.toDataURL('image/png');
+    } catch (canvasError) {
+      return 'data:image/svg+xml;base64,' + btoa(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+          <rect width="800" height="600" fill="#ffe6e6"/>
+          <text x="400" y="300" text-anchor="middle" font-family="monospace" font-size="18" fill="#cc0000">
+            网络连接失败，请重试
           </text>
         </svg>
       `);
