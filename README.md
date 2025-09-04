@@ -1,90 +1,81 @@
-# EOS3 Banana 🍌
+# Nano-Banana Figure Generator 🍌
 
-基于 Google Gemini 2.5 Flash Image Preview 的 Nano-Banana 手办生成工具
+专业的1/7比例手办渲染工具，基于 Google Gemini 和 nano-banana 模型技术
 
 ## 特性
 
-- **极简设计** - 采用 kernel.org 风格的极简主义界面
-- **专业手办生成** - 专门用于生成 1/7 比例商业化手办
-- **图片参考输入** - 上传角色插画作为参考
-- **预设专业提示词** - 内置优化的 nano-banana 模型提示词
-- **快速生成** - 10-30秒生成专业级手办效果图
+- **一键生成** - 无需配置，即开即用
+- **专业手办渲染** - 专门优化的 nano-banana 模型
+- **1/7 比例输出** - 标准商业化手办尺寸
+- **场景化展示** - 电脑桌场景 + ZBrush建模过程 + 万代包装盒
+- **极简界面** - kernel.org 风格，纯功能设计
 
-## 技术栈
+## 使用方法
 
-- **前端**: React 18 + TypeScript + Vite
-- **样式**: Tailwind CSS (极简 kernel.org 风格)
-- **AI模型**: Google Gemini 2.5 Flash Image Preview
-- **部署**: Vercel
+1. **上传角色插画** - 支持 JPG, PNG, WebP, GIF 格式
+2. **点击生成** - 自动使用 nano-banana 专业提示词
+3. **等待处理** - 10-30秒生成时间
+4. **下载结果** - 高质量手办渲染图
 
-## 快速开始
+## 生成效果
 
-1. **获取 API Key**
-   - 访问 [Google AI Studio](https://aistudio.google.com/app/apikey)
-   - 创建新的 API Key
+每次生成都包含：
+- **1/7 比例商业化手办**放置在电脑桌上
+- **透明亚克力圆形底座**（无文字）
+- **电脑屏幕显示** ZBrush 建模过程
+- **万代风格包装盒**印有原画作品
+- **现实感环境渲染**
 
-2. **本地运行**
-   ```bash
-   git clone https://github.com/jetsons-zz/eos3-banana.git
-   cd eos3-banana
-   npm install
-   npm run dev
-   ```
+## 技术规格
 
-3. **使用步骤**
-   - 在设置页面输入 Gemini API Key
-   - 可选：上传角色插画作为参考
-   - 点击"Generate Figure"生成手办
-   - 下载生成的图片
+- **AI模型**: Google Gemini 2.0 Flash Exp
+- **处理模式**: nano-banana 专业手办生成
+- **前端技术**: React + TypeScript + Vite
+- **设计风格**: kernel.org 极简主义
+- **部署平台**: Vercel
 
-## 默认生成效果
+## 在线访问
 
-应用使用专业的 nano-banana 提示词，生成包含：
-- **1/7 比例商业化手办**
-- **现实感的桌面环境**
-- **透明亚克力圆形底座**
-- **电脑屏幕显示 ZBrush 建模过程**
-- **万代风格包装盒与原画**
+🌐 **https://banana.eos3.ai**
+
+## 本地开发
+
+```bash
+# 克隆项目
+git clone https://github.com/jetsons-zz/eos3-banana.git
+cd eos3-banana
+
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+
+# 访问 http://localhost:5173/
+```
 
 ## 项目结构
 
 ```
 src/
-├── components/          # React 组件
-│   ├── ApiKeyConfig.tsx    # API Key 配置
-│   ├── ChatInterface.tsx   # 简化主界面
-│   └── FileUpload.tsx      # 图片上传
+├── components/
+│   ├── ChatInterface.tsx    # 主界面（上传+生成）
+│   └── FileUpload.tsx       # 图片上传组件
 ├── utils/
-│   └── gemini.ts          # Gemini API 集成
+│   └── gemini.ts            # Gemini API集成
 └── types/
-    └── index.ts           # TypeScript 类型定义
+    └── index.ts             # TypeScript类型
 ```
 
-## 设计理念
+## 核心提示词
 
-借鉴 kernel.org 的极简主义设计哲学：
-- 信息密集，功能优先
-- 黑白配色，蓝色链接
-- 表格化数据展示
-- 无装饰元素，纯功能界面
-
-## 开发
-
-```bash
-# 安装依赖
-npm install
-
-# 开发环境
-npm run dev
-
-# 构建生产版本
-npm run build
-
-# 代码检查
-npm run lint
-
-# 类型检查
-npm run type-check
+```
+Use the nano-banana model to create a 1/7 scale commercialized figure 
+of the character in the illustration, in a realistic style and environment. 
+Place the figure on a computer desk, using a circular transparent acrylic 
+base without any text. On the computer screen, display the ZBrush modeling 
+process of the figure. Next to the computer screen, place a BANDAI-style 
+toy packaging box printed with the original artwork.
 ```
 
 ## 部署
@@ -93,20 +84,15 @@ npm run type-check
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/jetsons-zz/eos3-banana)
 
-## 在线访问
-
-- **生产环境**: https://banana.eos3.ai
-- **GitHub仓库**: https://github.com/jetsons-zz/eos3-banana
-
 ## License
 
 MIT License
 
-## 致谢
+## 技术致谢
 
 - Google Gemini API
 - nano-banana 模型技术
-- kernel.org 设计灵感
+- kernel.org 设计理念
 
 ---
 
