@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { FileUpload } from './FileUpload';
-import { PromptSuggestions } from './PromptSuggestions';
 import { GeneratedImage } from '../types';
 
 interface ChatInterfaceProps {
@@ -12,6 +11,8 @@ interface ChatInterfaceProps {
   onClearError?: () => void;
 }
 
+const DEFAULT_PROMPT = "Use the nano-banana model to create a 1/7 scale commercialized figure of the character in the illustration, in a realistic style and environment. Place the figure on a computer desk, using a circular transparent acrylic base without any text. On the computer screen, display the ZBrush modeling process of the figure. Next to the computer screen, place a BANDAI-style toy packaging box printed with the original artwork.";
+
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   onGenerate,
   isGenerating,
@@ -20,9 +21,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   error,
   onClearError
 }) => {
-  const [prompt, setPrompt] = useState('');
+  const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
   const [selectedFile, setSelectedFile] = useState<File>();
-  const [showSuggestions, setShowSuggestions] = useState(true);
   const [showFileUpload, setShowFileUpload] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -31,23 +31,6 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     if (!prompt.trim() || isGenerating) return;
 
     await onGenerate(prompt.trim(), selectedFile);
-    setPrompt('');
-    setSelectedFile(undefined);
-    setShowSuggestions(false);
-    setShowFileUpload(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
-
-  const handlePromptSelect = (selectedPrompt: string) => {
-    setPrompt(selectedPrompt);
-    setShowSuggestions(false);
-    textareaRef.current?.focus();
   };
 
   const handleDownload = () => {
@@ -66,16 +49,16 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       {/* Header */}
       <div className="kernel-header">
         <h1>EOS3 Banana</h1>
-        <p>Powered by EOS3 | <a href="#" onClick={onOpenSettings}>设置</a></p>
+        <p>Nano-Banana Model Figure Generator | <a href="#" onClick={onOpenSettings}>Settings</a></p>
       </div>
 
       {/* Error Display */}
       {error && (
         <div className="error">
-          错误: {error}
+          Error: {error}
           {onClearError && (
             <button onClick={onClearError} style={{ marginLeft: '8px', fontSize: '11px' }}>
-              清除
+              Clear
             </button>
           )}
         </div>
@@ -84,20 +67,16 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       {/* Generated Image */}
       {generatedImage && (
         <div className="kernel-section">
-          <h2>生成结果</h2>
+          <h2>Generated Figure</h2>
           <table className="kernel-table">
             <tr>
-              <th>提示词</th>
-              <td>{generatedImage.prompt}</td>
+              <th>Generation Time</th>
+              <td>{new Date(generatedImage.timestamp).toLocaleString('en-US')}</td>
             </tr>
             <tr>
-              <th>生成时间</th>
-              <td>{new Date(generatedImage.timestamp).toLocaleString('zh-CN')}</td>
-            </tr>
-            <tr>
-              <th>操作</th>
+              <th>Actions</th>
               <td>
-                <button onClick={handleDownload}>下载图片</button>
+                <button onClick={handleDownload}>Download Image</button>
               </td>
             </tr>
           </table>
@@ -105,7 +84,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           <div style={{ marginTop: '8px', border: '1px solid #cccccc', padding: '4px' }}>
             <img
               src={generatedImage.imageUrl}
-              alt={generatedImage.prompt}
+              alt="Generated figure"
               style={{ maxWidth: '100%', height: 'auto' }}
             />
           </div>
@@ -115,9 +94,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       {/* Loading State */}
       {isGenerating && (
         <div className="kernel-section">
-          <h2>生成中...</h2>
+          <h2>Generating...</h2>
           <div className="loading">
-            Status: Generating image with EOS3<br/>
+            Status: Creating nano-banana figure<br/>
             Est. time: 10-30 seconds<br/>
             Please wait...
           </div>
@@ -133,36 +112,23 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             fontSize: '12px',
             color: '#666666'
           }}>
-            [IMAGE GENERATING...]
+            [FIGURE GENERATING...]
           </div>
         </div>
       )}
 
       {/* Input Form */}
       <div className="kernel-section">
-        <h2>图像生成</h2>
+        <h2>Generate Figure</h2>
         <form onSubmit={handleSubmit} className="kernel-form">
           <div className="kernel-form-row">
-            <span className="kernel-form-label">提示词:</span>
-            <textarea
-              ref={textareaRef}
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="描述你想要生成的图片..."
-              style={{ width: '400px', height: '80px' }}
-              disabled={isGenerating}
-            />
-          </div>
-          
-          <div className="kernel-form-row">
-            <span className="kernel-form-label">上传图片:</span>
+            <span className="kernel-form-label">Upload Image:</span>
             <input
               type="checkbox"
               checked={showFileUpload}
               onChange={(e) => setShowFileUpload(e.target.checked)}
             />
-            <label style={{ marginLeft: '4px', fontSize: '12px' }}>启用图片上传</label>
+            <label style={{ marginLeft: '4px', fontSize: '12px' }}>Enable image upload</label>
           </div>
 
           {showFileUpload && (
@@ -177,24 +143,42 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           )}
 
           <div className="kernel-form-row">
+            <span className="kernel-form-label">Prompt:</span>
+            <textarea
+              ref={textareaRef}
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              style={{ width: '500px', height: '120px' }}
+              disabled={isGenerating}
+            />
+          </div>
+          
+          <div className="kernel-form-row">
             <span className="kernel-form-label"></span>
             <button type="submit" disabled={!prompt.trim() || isGenerating}>
-              {isGenerating ? '生成中...' : '生成图片'}
+              {isGenerating ? 'Generating...' : 'Generate Figure'}
             </button>
-            <button type="button" onClick={() => setShowSuggestions(!showSuggestions)} style={{ marginLeft: '8px' }}>
-              {showSuggestions ? '隐藏' : '显示'}提示词库
+            <button 
+              type="button" 
+              onClick={() => setPrompt(DEFAULT_PROMPT)} 
+              style={{ marginLeft: '8px' }}
+            >
+              Reset to Default
             </button>
           </div>
         </form>
       </div>
 
-      {/* Prompt Suggestions */}
-      {showSuggestions && !generatedImage && !isGenerating && (
-        <div className="kernel-section">
-          <h2>预设提示词</h2>
-          <PromptSuggestions onSelectPrompt={handlePromptSelect} />
-        </div>
-      )}
+      {/* Instructions */}
+      <div className="kernel-section">
+        <h2>Instructions</h2>
+        <ul>
+          <li>Upload a character illustration (optional)</li>
+          <li>Modify the prompt if needed (default creates 1/7 scale figure)</li>
+          <li>Click "Generate Figure" to create the image</li>
+          <li>Download the result when ready</li>
+        </ul>
+      </div>
     </div>
   );
 };
