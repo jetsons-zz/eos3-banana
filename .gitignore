@@ -87,3 +87,4 @@ Thumbs.db
 # Local env files
 .env*.local
 .vercel
+node_modules

@@ -75,16 +75,32 @@ class GeminiService {
         }
       }
 
-      console.log('Calling Gemini API...');
-      const result = await model.generateContent(parts);
-      console.log('API call completed, processing response...');
+      console.log('Calling Gemini API through proxy...');
       
-      const response = await result.response;
+      // Use fetch with proxy instead of SDK for CORS issues
+      const response = await fetch('/api/gemini/v1beta/models/gemini-2.5-flash-image-preview:generateContent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: parts
+          }]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('API call completed, processing response...');
       console.log('Response received, checking for images...');
       
       // Check for generated images first
-      if (response.candidates && response.candidates[0]) {
-        const candidate = response.candidates[0];
+      if (result.candidates && result.candidates[0]) {
+        const candidate = result.candidates[0];
         console.log('Candidate found, checking content parts...');
         
         if (candidate.content?.parts) {
@@ -102,7 +118,7 @@ class GeminiService {
       
       // If no image, try to get text response
       try {
-        const text = response.text();
+        const text = result.candidates?.[0]?.content?.parts?.[0]?.text || 'No text response';
         console.log('Gemini text response:', text.substring(0, 100) + '...');
         
         // Create enhanced placeholder with actual response
